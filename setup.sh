@@ -5,14 +5,19 @@ create_symlinks() {
     script_dir=$(dirname "$(readlink -f "$0")")
 
     # Get a list of all files in this directory that start with a dot.
-    files=$(find -maxdepth 2 -type f -name ".*")
+    files=$(find -maxdepth 3 -type f -wholename "./src/**/.*")
 
     # Create a symbolic link to each file in the home directory.
     for file in $files; do
-        name=$(basename $file)
-        echo "Creating symlink to $name in home directory."
-        echo rm -rf ~/$name
-        echo ln -s $script_dir/$name ~/$name
+        filepath=$(readlink -f "$file")
+        filename=$(basename "$filepath")
+
+        echo "filepath: $filepath"
+        echo "filename: $filename"
+
+        echo "Creating symlink to $filename in home directory."
+        rm -rf ~/$filename
+        ln -s $filepath ~/$filename
     done
 }
 
